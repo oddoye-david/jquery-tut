@@ -65,42 +65,19 @@ $(document).ready(function () {
 
         ++rowCount;
 
-        // var prevFilterText = $('#parentBody')
-        //   .find(".filterBy").last()
-        //   .find("option:selected").val() || null;
-
         var selectedFilterValue = $(".row")
             .find(".filterBy")
             .last()
             .find("option:selected")
             .val() || null;
 
-        selectedFilterBy.push(selectedFilterValue);
+        if (selectedFilterValue) {
+            selectedFilterBy.push(selectedFilterValue);
+        }
+
         console.log(selectedFilterBy);
 
-        // console.log(prevFilterText);
         var filterOpToDel;
-
-
-        // if(prevFilterText != null){
-
-        //     var index = filterBy.findIndex(function (keys) {
-        //         return keys.id == prevFilterText;
-        //     });
-        //     // console.log(index);
-        //     filterBy.splice(index, 1);
-        //     // filterOpToDel = $.grep(filterBy, function (n, i) {
-        //     //     if (n.id == prevFilterText)
-        //     //         console.log(i);
-        //     //         // filterBy.splice(i,1);
-        //     // });
-        // }
-        // console.log(filterBy);
-        // filterBy.splice(1, 1);
-        // console.log(filterBy);
-
-
-        // console.log(filterOpToDel);
 
         if (filterBy.length > 0) {
 
@@ -133,29 +110,15 @@ $(document).ready(function () {
                     .remove();
 
                 var filterOptions = '<option selected disabled value="">Select a filter </option>';
-                $(filterBy).each(function (_, elem) {
 
-                    if (selectedFilterBy.length > 0 && selectedFilterBy[1] != null) {
-
-                        // $(selectedFilterBy).each(function (_,value) {
-                        //     if(elem.id == value){
-                        //         filterOptions += `<option disabled id="filter-option-${elem.id}" value="${elem.id}">${elem.filter}</option>`;
-                        //     }
-                        // });
-                        selectedFilterBy.forEach(function (value) {
-                            if (elem.id == value) {
-
-                                filterOptions += `<option disabled id="filter-option-${elem.id}" value="${elem.id}">${elem.filter}</option>`;
-                            }
-
-                        })
-
-
-                        return;
+                filterOptions = filterBy.reduce(function (htmlString, filterItem) {
+                    if (selectedFilterBy.includes(filterItem.id.toString())) {
+                        return `${htmlString}<option disabled id="filter-option-${filterItem.id}" value="${filterItem.id}">${filterItem.filter}</option>`
                     }
-                    filterOptions += `<option id="filter-option-${elem.id}" value="${elem.id}">${elem.filter}</option>`;
 
-                });
+                    return `${htmlString}<option id="filter-option-${filterItem.id}" value="${filterItem.id}">${filterItem.filter}</option>`
+
+                }, filterOptions)
 
                 $(`#filterId-${rowCount}`).append(filterOptions);
 
@@ -169,7 +132,6 @@ $(document).ready(function () {
     $(document).on('change', `.filterBy`, function () {
 
         var selectedFilterInput1 = $(this).find('option:selected').text();
-        //console.log(selectedFilterInput1.toLowerCase());
 
         $(this).parent().next('.conditionCol').children('.conditions').find('option').remove();
 
@@ -242,7 +204,6 @@ $(document).ready(function () {
             $(this)
                 .parent()
                 .next('.txtInputCol').show().append(`<input class="form-control input-sm txtInputVal" type="text" />`);
-            //$('.multiple-select2').hide();
             $(".txtInputVal").prop("required", true);
         }
 
@@ -250,8 +211,6 @@ $(document).ready(function () {
 
     $(document).on('click', '.btnRemove', function () {
         $(this).closest('.row').remove();
-        // var btnID = $(this).attr("id");
-        // $(`#row-${btnID}`).remove();
     });
 
 });
